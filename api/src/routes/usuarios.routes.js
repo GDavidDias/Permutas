@@ -10,7 +10,7 @@ const router = Router();
 
 router.post('/validateusuario', validateUsuario);
 router.post('/registerusuario', registerUsuario);
-router.get('/getinscriptos', getAllUsuarios);
+router.post('/getinscriptos', getAllUsuarios);
 
 //ruta para cambiar contraseña, datos pasan por body
 //router.put('/changepass', changePass);

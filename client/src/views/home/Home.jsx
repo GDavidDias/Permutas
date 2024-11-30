@@ -21,7 +21,6 @@ const Home = () => {
             <div className='w-full h-[5vh]'>
                 <Footer/>
             </div>
-
     </div>
   )
 }

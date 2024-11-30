@@ -18,7 +18,7 @@ const Landing = () => {
     const navigate = useNavigate();
 
     const[validaUser, setValidaUser]=useState(false);
-    const[mensajeLogin, setMensajeLogin]=useState('Registre sus Datos');
+    const[mensajeLogin, setMensajeLogin]=useState('Ingrese DNI y contraseña correctos');
 
     const[mensajeModalInfo, setMensajeModalInfo]=useState('');
     const[isOpenModal, openModal, closeModal]=useModal(false);
@@ -33,7 +33,10 @@ const Landing = () => {
         modalidad:'',
         zona:'',
         email:'',
-        permiso:2
+        telefono:'',
+        permiso:2,
+        region_actual:'',
+        region_solicitada:''
     });
     const[ver,setVer]=useState(false);
 
@@ -75,14 +78,15 @@ const Landing = () => {
                 setValidaUser(false);
                 setDataValida('')
                 //dispatch(outUser());
-                setMensajeLogin('Registre sus Datos');
+                // setMensajeLogin('Registre sus Datos');
+                setMensajeLogin('Ingrese DNI y contraseña correctos');
             }
         }
     }
 
     const submitRegister = async()=>{
         console.log('Ingresa a ValidaRegistro')
-        if(form.dni=='' || form.password=='' || form.apellido=='' || form.nombre=='' || form.cargo=='' || form.escuela=='' || form.modalidad=='' || form.email==''){
+        if(form.dni=='' || form.password=='' || form.apellido=='' || form.nombre=='' || form.cargo=='' || form.escuela=='' || form.modalidad=='' || form.email=='' || form.zona=='' || form.region_actual=='' || form.region_solicitada==''){
             setMensajeLogin('Faltan cargar datos para registrarse')
         }else{
             await axios.post(`${URL}/api/registerusuario`,form)
@@ -108,7 +112,9 @@ const Landing = () => {
             zona:'',
             email:'',
             telefono:'',
-            permiso:2
+            permiso:2,
+            region_actual:'',
+            region_solicitada:''
         })
         closeModal();
     };
@@ -125,7 +131,7 @@ const Landing = () => {
     },[dataValida])
 
   return (
-    <div>
+    <div className='notranslate'>
         <div className="flex flex-col items-center">
             <div className="h-[15vh] flex flex-row justify-center items-center bg-[#729DA6] border border-b-slate-400 w-full shadow-md ">
                 <div className="desktop:w-[90px] desktop:h-[90px] movil:w-[90px] movil:h-[80px] flex justify-center ">
@@ -133,12 +139,13 @@ const Landing = () => {
                 </div>
                 <div className="h-28  flex flex-col pl-4 justify-center items-center">
                     <label className="desktop:text-[38px] movil:text-xl font-bold text-white movil:text-center" translate='no'>Registro Permutas Definitivas 2025</label>
-                    {/* <label className="desktop:text-[25px] movil:text-lg text-white font-semibold mt-4" translate='no'>Nivel {configSG.nivel?.descripcion}</label> */}
+                    <label className="desktop:text-[25px] movil:text-xl text-white font-semibold desktop:mt-2 movil:mt-[2px] " translate='no'>Sala Inicial - Primaria</label>
                 </div>
             </div>
 
-            <div className='mt-2 desktop:h-[80vh] desktop:w-[50vw] flex flex-col items-center border-2 desktop:border-sky-500 rounded-md'>
-            <label className="text-[#729DA6] font-medium text-[20px] desktop:mb-4 desktop-xl:text-3xl " translate='no'>Ingreso y Registro</label>
+            <div className='mt-2 desktop:h-[80vh] desktop:w-[50vw] flex flex-col items-center '>
+            {/* <label className="text-[#729DA6] font-medium text-[20px] desktop:mb-4 desktop-xl:text-3xl " translate='no'>Ingreso y Registro</label> */}
+            <label className="text-[#729DA6] font-medium text-[20px] desktop:mb-4 desktop-xl:text-3xl " translate='no'>Ingreso</label>
                 <div className="flex flex-col mt-2 mb-4 justify-center">
                     <div className="flex flex-col items-end">
                         <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
@@ -185,7 +192,7 @@ const Landing = () => {
                             
                         </div>
                     </div>
-                    <div className="flex flex-col mt-4 items-end">
+                    {/* <div className="flex flex-col mt-4 items-end">
                         <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
                             <label className="text-base desktop-xl:text-xl">Apellido:</label>
                             <input
@@ -214,18 +221,18 @@ const Landing = () => {
                                 onChange={handleChange}
                                 name="cargo"
                                 type="text"
-                                placeholder='Ej. MG, EF, EM, etc..'
+                                placeholder='Ej. MJ, MG, EF, etc..'
                             ></input>
                         </div>
                         <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
-                            <label className="text-base desktop-xl:text-xl">Escuela:</label>
+                            <label className="text-base desktop-xl:text-xl">Esc / JI / JIN:</label>
                             <input
                                 className="mx-2 border-[1px] border-black rounded px-2 w-[250px] desktop-xl:text-xl"
                                 value={form.escuela}
                                 onChange={handleChange}
                                 name="escuela"
                                 type="text"
-                                placeholder='Escuela donde es titular'
+                                placeholder='Esc., JI o JIN donde es titular'
                             ></input>
                         </div>
                         <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
@@ -236,7 +243,7 @@ const Landing = () => {
                                 onChange={handleChange}
                                 name="modalidad"
                                 type="text"
-                                placeholder='Ej. JS, JC, etc...'
+                                placeholder='Ej. JS, JC, AA, etc...'
                             ></input>
                         </div>
                         <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
@@ -247,6 +254,29 @@ const Landing = () => {
                                 onChange={handleChange}
                                 name="zona"
                                 type="number"
+                                placeholder='Ej. 0, 20, 40, 60, 80 o 100'
+                            ></input>
+                        </div>
+                        <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
+                            <label className="text-base desktop-xl:text-xl">Region Actual:</label>
+                            <input
+                                className="mx-2 border-[1px] border-black rounded px-2 w-[250px] desktop-xl:text-xl"
+                                value={form.region_actual}
+                                onChange={handleChange}
+                                name="region_actual"
+                                type="text"
+                                placeholder='Ej. I, II, V, etc...'
+                            ></input>
+                        </div>
+                        <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
+                            <label className="text-base desktop-xl:text-xl">Region Solicitada:</label>
+                            <input
+                                className="mx-2 border-[1px] border-black rounded px-2 w-[250px] desktop-xl:text-xl"
+                                value={form.region_solicitada}
+                                onChange={handleChange}
+                                name="region_solicitada"
+                                type="text"
+                                placeholder='Dos Regiones Minimo Ej. II y V'
                             ></input>
                         </div>
                         <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
@@ -257,7 +287,7 @@ const Landing = () => {
                                 onChange={handleChange}
                                 name="telefono"
                                 type="text"
-                                placeholder='Su telefono para contacto'
+                                placeholder='Telefono de contacto (opcional)'
                             ></input>
                         </div>
                         <div className='flex flex-row desktop:my-2 movil:my-[4px]'>
@@ -268,11 +298,11 @@ const Landing = () => {
                                 onChange={handleChange}
                                 name="email"
                                 type="text"
-                                placeholder='Correo Electronico...'
+                                placeholder='Correo Electrónico'
                             ></input>
                         </div>
                         
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col items-center mt-4">
                         {(validaUser)
@@ -282,16 +312,16 @@ const Landing = () => {
                             translate='no'
                             id="botonEnter"
                             >Acceder</button>
-
-                            :<button
-                            className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded desktop-xl:h-10 desktop-xl:text-xl"
-                            onClick={submitRegister}
-                            translate='no'
-                            id="botonEnter"
-                            >Registrarse</button>
+                            :""
+                            // :<button
+                            // className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded desktop-xl:h-10 desktop-xl:text-xl"
+                            // onClick={submitRegister}
+                            // translate='no'
+                            // id="botonEnter"
+                            // >Registrarse</button>
 
                         }
-                        
+
                         
                     </div>
 
